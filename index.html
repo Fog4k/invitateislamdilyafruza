@@ -875,7 +875,17 @@
         Пожалуйста, подтвердите своё участие до 14 июня 2026 года.
       </p>
 
-      <form id="rsvpForm">
+      <!-- Скрытые поля для FormSubmit (заполняются JS перед отправкой) -->
+      <form id="rsvpForm" action="https://formsubmit.co/islamdilyafruza@gmail.com" method="POST">
+        <input type="hidden" name="_subject" value="🎊 Подтверждение — свадьба Исламбека и Диляфрузы">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://fog4k.github.io/invitateislamdilyafruza/?sent=1">
+        <input type="hidden" name="Имя" id="hName">
+        <input type="hidden" name="Участие" id="hAttend">
+        <input type="hidden" name="Гостей" id="hCount">
+        <input type="hidden" name="Напитки" id="hDrinks">
+
         <div class="f-group">
           <label class="f-lbl" data-ru="Ваше имя" data-uz="Ismingiz">Ваше имя</label>
           <input class="f-input" id="rName" type="text" placeholder="Имя и фамилия…" required>
@@ -885,12 +895,12 @@
           <p class="f-lbl" data-ru="Участие" data-uz="Ishtirok">Участие</p>
           <div class="radio-list" id="grpAttend">
             <label class="r-item picked" onclick="pickR(this,'grpAttend')">
-              <input type="radio" name="attend" value="yes" checked>
+              <input type="radio" name="_attend" value="Придёт ✅" checked>
               <div class="r-circle"></div>
               <span class="r-lbl" data-ru="Я приду" data-uz="Men kelaman">Я приду</span>
             </label>
             <label class="r-item" onclick="pickR(this,'grpAttend')">
-              <input type="radio" name="attend" value="no">
+              <input type="radio" name="_attend" value="Не придёт ❌">
               <div class="r-circle"></div>
               <span class="r-lbl" data-ru="Не смогу прийти" data-uz="Kela olmayman">Не смогу прийти</span>
             </label>
@@ -901,12 +911,12 @@
           <p class="f-lbl" data-ru="Количество гостей" data-uz="Mehmonlar soni">Количество гостей</p>
           <div class="radio-list" id="grpCount">
             <label class="r-item picked" onclick="pickR(this,'grpCount')">
-              <input type="radio" name="count" value="Один" checked>
+              <input type="radio" name="_count" value="Один" checked>
               <div class="r-circle"></div>
               <span class="r-lbl" data-ru="Один" data-uz="Yolg'iz">Один</span>
             </label>
             <label class="r-item" onclick="pickR(this,'grpCount')">
-              <input type="radio" name="count" value="С парой">
+              <input type="radio" name="_count" value="С парой">
               <div class="r-circle"></div>
               <span class="r-lbl" data-ru="С парой" data-uz="Juftlik bilan">С парой</span>
             </label>
@@ -1085,47 +1095,27 @@ function toggleMusic() {
 }
 
 /* ─── RSVP SUBMIT ─── */
-/* ⚠️ Замени YOUR_EMAIL на нужную почту */
-const RSVP_EMAIL = 'islamdilyafruza@gmail.com';
-
-document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = '…';
-
+document.getElementById('rsvpForm').addEventListener('submit', function(e) {
   const name   = document.getElementById('rName').value.trim();
-  const attend = (this.querySelector('[name="attend"]:checked') || {}).value || '—';
-  const count  = (this.querySelector('[name="count"]:checked') || {}).value || '—';
+  const attend = (this.querySelector('[name="_attend"]:checked') || {}).value || '—';
+  const count  = (this.querySelector('[name="_count"]:checked') || {}).value || '—';
   const drinks = [...document.querySelectorAll('#drinkGroup .pill.on')]
                    .map(p => p.getAttribute('data-ru') || p.textContent).join(', ') || 'не указано';
 
-  try {
-    const res = await fetch(`https://formsubmit.co/ajax/${RSVP_EMAIL}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        Имя: name,
-        Участие: attend === 'yes' ? 'Придёт ✅' : 'Не придёт ❌',
-        Гостей: count,
-        Напитки: drinks,
-        _subject: '🎊 Подтверждение — свадьба Исламбека и Диляфрузы',
-        _template: 'table',
-        _captcha: 'false'
-      })
-    });
-    const json = await res.json();
-    if (json.success === 'true' || json.success === true) {
-      this.style.display = 'none';
-      const m = document.getElementById('successMsg');
-      m.style.display = 'block';
-      setLang(lang);
-    } else { throw new Error(); }
-  } catch {
-    btn.disabled = false;
-    btn.textContent = lang === 'ru' ? 'Ошибка — попробуйте ещё раз' : 'Xato — qayta urining';
-  }
+  document.getElementById('hName').value   = name;
+  document.getElementById('hAttend').value = attend;
+  document.getElementById('hCount').value  = count;
+  document.getElementById('hDrinks').value = drinks;
+  // форма отправляется обычным POST на FormSubmit
 });
+
+/* ─── Показать "Спасибо" если вернулись после отправки ─── */
+if (new URLSearchParams(location.search).get('sent') === '1') {
+  document.getElementById('rsvpForm').style.display = 'none';
+  const m = document.getElementById('successMsg');
+  m.style.display = 'block';
+  history.replaceState({}, '', location.pathname);
+}
 
 /* init */
 setLang('ru');
