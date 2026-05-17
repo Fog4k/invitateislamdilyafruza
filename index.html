@@ -875,16 +875,7 @@
         Пожалуйста, подтвердите своё участие до 14 июня 2026 года.
       </p>
 
-      <!-- Скрытые поля для FormSubmit (заполняются JS перед отправкой) -->
-      <form id="rsvpForm" action="https://formsubmit.co/islamdilyafruza@gmail.com" method="POST">
-        <input type="hidden" name="_subject" value="🎊 Подтверждение — свадьба Исламбека и Диляфрузы">
-        <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_next" value="https://fog4k.github.io/invitateislamdilyafruza/?sent=1">
-        <input type="hidden" name="Имя" id="hName">
-        <input type="hidden" name="Участие" id="hAttend">
-        <input type="hidden" name="Гостей" id="hCount">
-        <input type="hidden" name="Напитки" id="hDrinks">
+      <form id="rsvpForm">
 
         <div class="f-group">
           <label class="f-lbl" data-ru="Ваше имя" data-uz="Ismingiz">Ваше имя</label>
@@ -1094,28 +1085,43 @@ function toggleMusic() {
   a.paused ? a.play() : a.pause();
 }
 
-/* ─── RSVP SUBMIT ─── */
-document.getElementById('rsvpForm').addEventListener('submit', function(e) {
+/* ─── RSVP → TELEGRAM ─── */
+const TG_TOKEN   = '8678161109:AAFiuVuri_67Uc3pUsQCwcje4VGzX7P73FE';
+const TG_CHAT_ID = '8091226483';
+
+document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const btn    = document.getElementById('submitBtn');
   const name   = document.getElementById('rName').value.trim();
   const attend = (this.querySelector('[name="_attend"]:checked') || {}).value || '—';
   const count  = (this.querySelector('[name="_count"]:checked') || {}).value || '—';
   const drinks = [...document.querySelectorAll('#drinkGroup .pill.on')]
                    .map(p => p.getAttribute('data-ru') || p.textContent).join(', ') || 'не указано';
 
-  document.getElementById('hName').value   = name;
-  document.getElementById('hAttend').value = attend;
-  document.getElementById('hCount').value  = count;
-  document.getElementById('hDrinks').value = drinks;
-  // форма отправляется обычным POST на FormSubmit
-});
+  const text = `🎊 <b>Новое подтверждение</b>\n\n👤 <b>Имя:</b> ${name}\n${attend}\n👥 <b>Гостей:</b> ${count}\n🍾 <b>Напитки:</b> ${drinks}`;
 
-/* ─── Показать "Спасибо" если вернулись после отправки ─── */
-if (new URLSearchParams(location.search).get('sent') === '1') {
-  document.getElementById('rsvpForm').style.display = 'none';
-  const m = document.getElementById('successMsg');
-  m.style.display = 'block';
-  history.replaceState({}, '', location.pathname);
-}
+  btn.disabled = true;
+  btn.textContent = '…';
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: TG_CHAT_ID, text, parse_mode: 'HTML' })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      this.style.display = 'none';
+      const m = document.getElementById('successMsg');
+      m.style.display = 'block';
+      setLang(lang);
+    } else { throw new Error(); }
+  } catch {
+    btn.disabled = false;
+    btn.textContent = lang === 'ru' ? 'Ошибка — попробуйте ещё раз' : 'Xato — qayta urining';
+  }
+});
 
 /* init */
 setLang('ru');
