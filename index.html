@@ -766,7 +766,7 @@
         <p class="tl-event" data-ru="Танцы и праздничный ужин" data-uz="Raqslar va bayram ziyofati">Танцы и праздничный ужин</p>
       </div>
       <div class="tl-item">
-        <p class="tl-time">22:00</p>
+        <p class="tl-time">23:00</p>
         <div class="tl-dot"></div>
         <p class="tl-event" data-ru="Праздник завершается…" data-uz="Bayram yakunlanadi…">Праздник завершается…</p>
         <p class="tl-note" data-ru="Начинается история новой семьи ✨" data-uz="Yangi oilaning tarixi boshlanadi ✨">Начинается история новой семьи ✨</p>
@@ -911,6 +911,19 @@
               <div class="r-circle"></div>
               <span class="r-lbl" data-ru="С парой" data-uz="Juftlik bilan">С парой</span>
             </label>
+          </div>
+        </div>
+
+        <div class="f-group">
+          <p class="f-lbl" data-ru="Предпочтения по алкоголю" data-uz="Alkogol xohishi">Предпочтения по алкоголю</p>
+          <div class="pill-row" id="drinkGroup">
+            <div class="pill" onclick="this.classList.toggle('on')" data-ru="Вино красное" data-uz="Qizil vino">Вино красное</div>
+            <div class="pill" onclick="this.classList.toggle('on')" data-ru="Вино белое" data-uz="Oq vino">Вино белое</div>
+            <div class="pill" onclick="this.classList.toggle('on')" data-ru="Коньяк" data-uz="Konyak">Коньяк</div>
+            <div class="pill" onclick="this.classList.toggle('on')" data-ru="Водка" data-uz="Vodka">Водка</div>
+            <div class="pill" onclick="this.classList.toggle('on')" data-ru="Шампанское" data-uz="Shampan">Шампанское</div>
+            <div class="pill" onclick="this.classList.toggle('on')" data-ru="Виски" data-uz="Viski">Виски</div>
+            <div class="pill" onclick="this.classList.toggle('on')" data-ru="Без алкоголя" data-uz="Alkogolsiz">Без алкоголя</div>
           </div>
         </div>
 
@@ -1083,7 +1096,10 @@ document.getElementById('rsvpForm').addEventListener('submit', async function(e)
   const name   = document.getElementById('rName').value.trim();
   const attend = (this.querySelector('[name="_attend"]:checked') || {}).value || '—';
   const count  = (this.querySelector('[name="_count"]:checked') || {}).value || '—';
-  const text = `🎊 <b>Новое подтверждение</b>\n\n👤 <b>Имя:</b> ${name}\n${attend}\n👥 <b>Гостей:</b> ${count}`;
+  const drinks = [...document.querySelectorAll('#drinkGroup .pill.on')]
+                   .map(p => p.getAttribute('data-ru') || p.textContent).join(', ') || 'не указано';
+
+  const text = `🎊 <b>Новое подтверждение</b>\n\n👤 <b>Имя:</b> ${name}\n${attend}\n👥 <b>Гостей:</b> ${count}\n🍾 <b>Напитки:</b> ${drinks}`;
 
   btn.disabled = true;
   btn.textContent = '…';
