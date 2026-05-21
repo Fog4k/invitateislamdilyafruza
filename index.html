@@ -648,7 +648,7 @@
     </div>
 
     <p class="hero-date">19 · 06 · 2026</p>
-    <p class="hero-city" data-ru="Ташкент, Узбекистан" data-uz="Toshkent, O'zbekiston">Ташкент, Узбекистан</p>
+    <p class="hero-city" data-ru="Нукус, Каракалпакстан" data-uz="Nukus, Qoraqalpog'iston">Нукус, Каракалпакстан</p>
   </div>
 
   <div class="scroll-hint">
@@ -914,19 +914,6 @@
           </div>
         </div>
 
-        <div class="f-group">
-          <p class="f-lbl" data-ru="Предпочтения по алкоголю" data-uz="Alkogol xohishi">Предпочтения по алкоголю</p>
-          <div class="pill-row" id="drinkGroup">
-            <div class="pill" onclick="this.classList.toggle('on')" data-ru="Вино красное" data-uz="Qizil vino">Вино красное</div>
-            <div class="pill" onclick="this.classList.toggle('on')" data-ru="Вино белое" data-uz="Oq vino">Вино белое</div>
-            <div class="pill" onclick="this.classList.toggle('on')" data-ru="Коньяк" data-uz="Konyak">Коньяк</div>
-            <div class="pill" onclick="this.classList.toggle('on')" data-ru="Водка" data-uz="Vodka">Водка</div>
-            <div class="pill" onclick="this.classList.toggle('on')" data-ru="Шампанское" data-uz="Shampan">Шампанское</div>
-            <div class="pill" onclick="this.classList.toggle('on')" data-ru="Виски" data-uz="Viski">Виски</div>
-            <div class="pill" onclick="this.classList.toggle('on')" data-ru="Без алкоголя" data-uz="Alkogolsiz">Без алкоголя</div>
-          </div>
-        </div>
-
         <button class="submit-btn" type="submit" id="submitBtn"
                 data-ru="Отправить" data-uz="Yuborish">Отправить</button>
       </form>
@@ -947,7 +934,7 @@
   <div class="petals-wrap" id="petalsWrap"></div>
   <p class="f-names">Исламбек &amp; Диляфруза</p>
   <p class="f-date">19 · 06 · 2026</p>
-  <p class="f-city" data-ru="Ташкент, Узбекистан" data-uz="Toshkent, O'zbekiston">Ташкент, Узбекистан</p>
+  <p class="f-city" data-ru="Нукус, Каракалпакстан" data-uz="Nukus, Qoraqalpog'iston">Нукус, Каракалпакстан</p>
   <div class="footer-orn">
     <svg viewBox="0 0 220 32" fill="none">
       <line x1="0" y1="16" x2="68" y2="16" stroke="#c9a84c" stroke-width=".7"/>
@@ -1096,10 +1083,7 @@ document.getElementById('rsvpForm').addEventListener('submit', async function(e)
   const name   = document.getElementById('rName').value.trim();
   const attend = (this.querySelector('[name="_attend"]:checked') || {}).value || '—';
   const count  = (this.querySelector('[name="_count"]:checked') || {}).value || '—';
-  const drinks = [...document.querySelectorAll('#drinkGroup .pill.on')]
-                   .map(p => p.getAttribute('data-ru') || p.textContent).join(', ') || 'не указано';
-
-  const text = `🎊 <b>Новое подтверждение</b>\n\n👤 <b>Имя:</b> ${name}\n${attend}\n👥 <b>Гостей:</b> ${count}\n🍾 <b>Напитки:</b> ${drinks}`;
+  const text = `🎊 <b>Новое подтверждение</b>\n\n👤 <b>Имя:</b> ${name}\n${attend}\n👥 <b>Гостей:</b> ${count}`;
 
   btn.disabled = true;
   btn.textContent = '…';
